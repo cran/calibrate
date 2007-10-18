@@ -17,5 +17,4 @@ function (X, Y, labs, cx = 0.5, dcol = "black", m = c(0, 0))
     if (sum(negXnegY) > 0) 
         text(X[negXnegY], Y[negXnegY], labs[negXnegY], adj = c(1.3, 
             1.3), cex = cx, col = dcol)
-    return(NULL)
 }

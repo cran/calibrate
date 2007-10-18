@@ -3,7 +3,11 @@
 \title{Calibration of Biplot and Scatterplot Axis}
 \description{Routine for the calibration of any axis (variable vector) in a biplot or a scatterplot}
 \usage{
-calibrate(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,verb=TRUE,axislab="",reverse=FALSE,shift=0,alpha=NULL,labpos=1,weights=diag(rep(1,length(y))),axiscol="blue",cex.axislab=0.75,graphics=TRUE,where=3,laboffset=c(0,0),m=matrix(c(0,0),nrow=1),markerpos=3,showlabel=TRUE)}
+calibrate(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,
+verb=TRUE,axislab="",reverse=FALSE,shift=0,alpha=NULL,labpos=1,
+weights=diag(rep(1,length(y))),axiscol="blue",cex.axislab=0.75,
+graphics=TRUE,where=3,laboffset=c(0,0),m=matrix(c(0,0),nrow=1),
+markerpos=3,showlabel=TRUE,lwd=1)}
 \arguments{
   \item{g}{ the vector to be calibrated (2 x 1). }
   \item{y}{ the data vector corresponding to \code{g}, appropriately centred and/or standardized. }
@@ -35,6 +39,7 @@ creating finer scales of tickmarks without labels.}
   \item{m}{ vector of means. }
   \item{markerpos}{ position specifier for the tick mark labels (1,2,3 or 4). }
   \item{showlabel}{ show axis label in graph (T) or not (F). }
+  \item{lwd}{ line with for the calibrated axis }
 }
 \details{
   This program calibrates variable vectors in biplots and scatterplots, by drawing tick marks along 

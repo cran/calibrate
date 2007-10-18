@@ -1,5 +1,5 @@
 "calibrate" <-
-function(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,verb=TRUE,axislab="",reverse=FALSE,shift=0,alpha=NULL,labpos=1,weights=diag(rep(1,length(y))),axiscol="blue",cex.axislab=0.75,graphics=TRUE,where=3,laboffset=c(0,0),m=matrix(c(0,0),nrow=1),markerpos=3,showlabel=TRUE) {
+function(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,verb=TRUE,axislab="",reverse=FALSE,shift=0,alpha=NULL,labpos=1,weights=diag(rep(1,length(y))),axiscol="blue",cex.axislab=0.75,graphics=TRUE,where=3,laboffset=c(0,0),m=matrix(c(0,0),nrow=1),markerpos=3,showlabel=TRUE,lwd=1) {
 
    if (is.matrix(weights))
       Dw <- weights
@@ -96,7 +96,7 @@ function(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,verb=TRUE,axislab="
 
 #      lines(M,col=axiscol)                                 # draw the ax
 
-      lines(rbind(M[1,],M[nrM,]),col=axiscol)
+      lines(rbind(M[1,],M[nrM,]),col=axiscol,lwd=lwd)
 
       if(lm) {                                            # label the markers
          if (reverse==TRUE)
@@ -111,7 +111,7 @@ function(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,verb=TRUE,axislab="
       nm<-nrow(M)
 
       if(dt==TRUE) {
-         for(i in 1:nm) lines(rbind(M[i,1:2],Mn[i,1:2]),col=axiscol)   # draw tick marks
+         for(i in 1:nm) lines(rbind(M[i,1:2],Mn[i,1:2]),col=axiscol,lwd=lwd)   # draw tick marks
       }
 
 
