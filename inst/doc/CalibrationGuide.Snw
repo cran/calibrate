@@ -10,7 +10,6 @@
 \usepackage{Sweave}
 \usepackage{Rd}
 \usepackage{url}
-\usepackage{astron}
 \usepackage{wrapfig}
 \usepackage{hyperref}
 
