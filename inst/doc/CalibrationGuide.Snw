@@ -23,7 +23,8 @@
 \begin{center}
 \sf
 {\sf \bf \Large A Guide to Scatterplot and Biplot Calibration}\\
-%\normalsize
+\vspace{4mm}
+{\sf \normalsize {\tt version 1.6}}\\%\normalsize
 \vspace{4mm}
 {\bf \large Jan Graffelman}\\
 \vspace{4mm} \rm \large
@@ -32,7 +33,7 @@ Universitat Polit\`ecnica de Catalunya\\
 Avinguda Diagonal 647, 08028 Barcelona, Spain.\\
 {\it email:} jan.graffelman@upc.edu\\
 \vspace{4mm}
-{\sc October 2007}
+{\sc December 2009}
 \end{center}
 
 \section{Introduction}
@@ -59,7 +60,7 @@ calibration of biplot axes. Several subsections follow with detailed
 instructions of how to calibrate biplot axis in principal component analysis
 (PCA, Section~\ref{sec:pca}), correspondence analysis (CA. Section~\ref{sec:ca}), 
 canonical correlation analysis (CCA, Section~\ref{sec:cca}) and redundancy analysis (RDA, Section~\ref{sec:rda}). 
-The online documentation of the main routine for calibration {\tt calibrate} is added in 
+The online documentation of the main routine for calibration {\tt calibrate} is referenced in 
 Section~\ref{sec:online}.\\
 
 This guide does not provide the theory for the construction of scales on scatterplot
@@ -132,7 +133,7 @@ obtain an additional axis for $X_5$. We represent $X_5$ in the plot as a simple
 arrow whose coordinates are given by the regression coefficients:
 
 <<fig=TRUE,echo=TRUE,aap=TRUE>>=
-Xc <- scale(X,center=T,scale=F)
+Xc <- scale(X,center=TRUE,scale=FALSE)
 b <- solve(t(Xc[,1:2])%*%Xc[,1:2])%*%t(Xc[,1:2])%*%Xc[,5]
 print(b)
 bscaled <- 20*b
@@ -141,7 +142,7 @@ arrows(m[1],m[2],m[1]-bscaled[1],m[2]-bscaled[2],length=0,lty="dashed",col="blue
 @
 
 A direction that is optimal in the least squares sense for $X_5$ is given by the vector of regression
-coefficients~(2003). To make this direction more visible, we multiplied it by a constant (20). 
+coefficients~\cite{Graffel13}. To make this direction more visible, we multiplied it by a constant (20). 
 It is clear that the direction of increase for $X_5$ runs approximately North-East across the scatterplot. 
 We now proceed to calibrate this direction with a scale for $X_5$. In order to choose sensible values for
 the scale of $X_5$, we first inspect the range of variation of $X_5$, and then choose a set of values we want
@@ -151,7 +152,7 @@ typically have to be tried to see how to obtain a nice scale.
 
 <<fig=TRUE,echo=TRUE,aap=TRUE>>=
 print(range(X[,5]))
-yc <- scale(X[,5],scale=F)
+yc <- scale(X[,5],scale=FALSE)
 tm <- seq(2,10,by=1)
 tmc <- tm - mean(X[,5])
 Calibrate.X5<-calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_5",labpos=4,cex.axislab=1)
@@ -168,7 +169,38 @@ squares will be used. The goodness-of-fit of $X_5$ is 0.513. This means that 51.
 of $X_5$ can be explained by a regression onto $X_1$ and $X_2$ ($R^2 = 0.513$). The goodness-of-scale has
 the same value. The goodness-of-scale is only relevant if we modify parameter {\tt alpha}. {\tt Calibrate.X5}
 is a list object containing all calibration results (calibration factor, fitted values according to the
-scale used, tick marker positions, etc.)
+scale used, tick marker positions, etc.).
+
+\subsubsection*{Shifting a calibrated axis}
+
+Using many calibrated axes in a plot, all passing through the origin, leads to dense plots that become
+unreadable. It is therefore a good idea to shift calibrated axes towards the margins of the plot. This keeps
+the central cloud of data points clear and relegates all information on scales to the margins of the graph.
+There are two natural positions for a shifted axis: just above the largest data point in a direction perpendicular
+to the axis being calibrated, or just below the smallest data point in the perpendicular direction. The arguments
+{\tt shiftdir, shiftfactor} and {\tt shiftvec} can be used to control the shifting of a calibrated axis. {\tt 
+shiftvec} allows the user to specify the shift vector manually. This is normally not needed, and good positions
+for an axis can be found by using only {\tt shiftdir} and {\tt shiftfactor}. Argument {\tt shiftdir} can be set 
+to {\tt 'right'} or {\tt 'left'} and indicates in which direction the axis is to be shifted, with respect to the direction of 
+increase of the calibrated axis. Setting {\tt shiftdir} shifts the axis automatically just above or below 
+the most outlying data point in the direction perpendicular to the vector being calibrated. In order to
+move the calibrated axis farther out or to pull it more in, {\tt shiftfactor} can be used. 
+Argument {\tt shiftfactor} stretches or shrinks the shift vector for the axis. A {\tt shiftfactor} larger
+than 1 moves the axis outwards, and a {\tt shiftfactor} smaller than 1 pulls the axis towards the origin of
+the plot. If set to 1 exactly, the shifted axis will cut through the most outlying data point. 
+The default {\tt shiftfactor} is 1.05. We redo
+the previous plot, shifting the calibrated axis below the cloud of points, which is to the right w.r.t. the 
+direction of increase of the variable.
+
+<<fig=TRUE,echo=TRUE,aap=TRUE>>=
+yc <- scale(X[,5],scale=FALSE)
+tm <- seq(2,10,by=1)
+tmc <- tm - mean(X[,5])
+Calibrate.X5<-calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_5",labpos=4,cex.axislab=1,shiftdir="right")
+@
+
+The shift of the axis does not affect the interpretation of the plot, because the projections of the points
+onto the axis remain the same.
 
 \subsubsection*{Second vertical axis in a scatterplot}
 
@@ -177,25 +209,24 @@ is optimal in the least squares sense. However, if desired, additional variables
 as a second vertical axis on the right of the plot, or as a second horizontal axis on the top of the
 plot. We now proceed to construct a second vertical axis on the right hand of the scatter plot for
 $X_5$. This can be done by setting the vector to be calibrated (first argument of routine {\tt calibrate})
-to the (0,1) vector. By specifying a {\tt shift} factor, the axis can be shifted. For this data, setting
-the {\tt shift} value to {\tt par('usr')[2]-mean(X[,1])} will make the axis coincide with the right vertical
-borderline of the graph.
+to the (0,1) vector. By specifying a shiftvector explicitly ({\tt shiftvec}), the axis can be shifted. For 
+this data, setting {\tt shiftvec} to {\tt c(par('usr')[2]-mean(X[,1]),0)} and {\tt shiftfactor = 1}, 
+makes the axis coincide with the right vertical borderline of the graph.
 
 <<fig=TRUE,echo=TRUE,aap=TRUE>>=
-opar <- par('xpd'=T)
+opar <- par('xpd'=TRUE)
 tm <- seq(3,8,by=1)
 tmc <- (tm - mean(X[,5]))
 Calibrate.rightmargin.X5 <- calibrate(c(0,1),yc,tmc,Xc[,1:2],tmlab=tm,m=m,axislab="X_5",tl=0.5,
-shift=par('usr')[2]-mean(X[,1]),where=2,laboffset=c(1.5,1.5),cex.axislab=1)
+shiftvec=c(par('usr')[2]-mean(X[,1]),0),shiftfactor=1,where=2,laboffset=c(1.5,1.5),cex.axislab=1)
 par(opar)
 @
 
 The second vertical axis has calibration factor 3.46, and a goodness of fit of 0.34. The fit of the
 variable is worse in comparison with the previous oblique direction given by the regression coefficients. Note
-that graphical clipping in temporarily turned off ({\tt par('xpd'=T)}) to allow the calibration 
+that graphical clipping in temporarily turned off ({\tt par('xpd'=TRUE)}) to allow the calibration 
 routine to draw ticks and labels outside the figure region, and that the range of the tick marks was
 shortened in order not surpass the figure region.
-\clearpage
 
 \subsubsection*{Subscales and double calibrations}
 
@@ -204,20 +235,20 @@ E.g. larger labelled
 tickmarks can be used to represent multiples of 10, and small unlabelled tick marks can be used to 
 represent units. The subscale allows a more precise recovery of the data values. This can simply be 
 achieved by calling the calibration routine twice, once with a coarse sequence and once with a finer 
-sequence. For the second call one can specify {\tt verb=F} in order to suppress the numerical output
-of the routine, and {\tt lm=F} to supress the tick mark labels under the smaller ticks. The tickmarks
+sequence. For the second call one can specify {\tt verb=FALSE} in order to suppress the numerical output
+of the routine, and {\tt lm=FALSE} to supress the tick mark labels under the smaller ticks. The tickmarks
 for the finer scale are made smaller by modifying the tick length (e.g. {\tt tl=0.1}). Depending on the data, 
 some trial and error with different values for {\tt tl} may be necessary before nice scales are obtained. This
 may be automatized in the future. Finally, reading off the (approximate) data values can further be enhanced 
-by drawing perpendiculars from the points to the calibrated axis by setting {\tt dp=T}.
+by drawing perpendiculars from the points to the calibrated axis by setting {\tt dp=TRUE}.
 
 <<fig=TRUE,echo=TRUE,aap=TRUE>>=
 tm <- seq(2,10,by=1)
 tmc <- (tm - mean(X[,5]))
-Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,axislab="X_5",tl=0.5,dp=T,labpos=4)
+Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,axislab="X_5",tl=0.5,dp=TRUE,labpos=4)
 tm <- seq(2,10,by=0.1)
 tmc <- (tm - mean(X[,5]))
-Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,verb=F,lm=F)
+Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,verb=FALSE,lm=FALSE)
 @
 
 A {\it double calibration} can be created by drawing two scales, one on each side of the axis. Double
@@ -234,22 +265,22 @@ the other side of the axes, a refined scale for $X_1$, and a scale for the stand
 $X_2$. For the latter calibration one unit equals one standard deviation. 
 
 <<fig=TRUE,echo=TRUE,aap=TRUE>>=
-opar <- par('xpd'=T)
+opar <- par('xpd'=TRUE)
 tm <- seq(5,25,by=5)
 tmc <- (tm - mean(X[,1]))
-yc <- scale(X[,1],scale=F)
-Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.5,axislab="X_1",cex.axislab=1,showlabel=F,
-shift=-(mean(X[,2])-par('usr')[3])^2,reverse=T)
+yc <- scale(X[,1],scale=FALSE)
+Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.5,axislab="X_1",cex.axislab=1,showlabel=FALSE,
+shiftvec=c(0,-(m[2]-par("usr")[3])),shiftfactor=1,reverse=TRUE)
 tm <- seq(5,25,by=1); tmc <- (tm - mean(X[,1]))
-Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,axislab="X_1",cex.axislab=1,showlabel=F,
-shift=-(mean(X[,2])-par('usr')[3])^2,reverse=T,verb=F,lm=F)
-yc <- scale(X[,2],scale=T)
+Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,axislab="X_1",cex.axislab=1,showlabel=FALSE,
+shiftvec=c(0,-(m[2]-par("usr")[3])),shiftfactor=1,reverse=TRUE,verb=FALSE,lm=FALSE)
+yc <- scale(X[,2],scale=TRUE)
 tm <- seq(-3,1,by=1)
-Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.6,axislab="X_2",cex.axislab=1,showlabel=F,
-shift=-(mean(X[,1])-par('usr')[1]),verb=T,lm=T)
+Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.6,axislab="X_2",cex.axislab=1,showlabel=FALSE,
+shiftvec=c(-(mean(X[,1])-par('usr')[1]),0),shiftfactor=1,verb=TRUE,lm=TRUE)
 tm <- seq(-3,1.5,by=0.1)
-Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_2",cex.axislab=1,showlabel=F,
-shift=-(mean(X[,1])-par('usr')[1]),verb=F,lm=F)
+Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_2",cex.axislab=1,showlabel=FALSE,
+shiftvec=c(-(mean(X[,1])-par('usr')[1]),0),shiftfactor=1,verb=FALSE,lm=FALSE)
 par(opar)
 @
 
@@ -281,7 +312,7 @@ calibration.
 
 <<fig=TRUE,echo=TRUE,aap=FALSE>>=
 # PCA and Biplot construction
-pca.results <- princomp(X,cor=F)
+pca.results <- princomp(X,cor=FALSE)
 Fp <- pca.results$scores
 Gs <- pca.results$loadings
 plot(Fp[,1],Fp[,2],pch=16,asp=1,xlab="PC 1",ylab="PC 2",cex=0.5)
@@ -296,7 +327,7 @@ g <- Gs[3,1:2]
 Calibrate.X3 <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,tl=0.5,axislab="X3",cex.axislab=0.75,where=1,labpos=4)
 ticklab  <- seq(5,30,by=1)
 ticklabc <- ticklab-mean(X[,3])
-Calibrate.X3.fine <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,lm=F,tl=0.25,verb=F,cex.axislab=0.75,where=1,labpos=4)
+Calibrate.X3.fine <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,lm=FALSE,tl=0.25,verb=FALSE,cex.axislab=0.75,where=1,labpos=4)
 @
 
 We do a PCA based on the correlation matrix, and proceed to construct a biplot of the correlation matrix. The
@@ -305,7 +336,7 @@ correlation scale. Routine {\tt calibrate} is repeatedly called to create finer 
 
 <<fig=TRUE,echo=TRUE,aap=FALSE>>=
 # PCA and Biplot construction
-pca.results <- princomp(X,cor=T)
+pca.results <- princomp(X,cor=TRUE)
 Fp <- pca.results$scores
 Ds <- diag(pca.results$sdev)
 Fs <- Fp%*%solve(Ds)
@@ -320,12 +351,12 @@ ticklab <- c(seq(-1,-0.2,by=0.2),seq(0.2,1.0,by=0.2))
 R <- cor(X)
 y <- R[,5]
 g <- Gp[5,1:2]                                        
-Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=T,tl=0.05,dp=T,
+Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=TRUE,tl=0.05,dp=TRUE,
                       labpos=2,cex.axislab=0.75,axislab="X_5")
 ticklab <- seq(-1,1,by=0.1)
-Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=F,tl=0.05,verb=F)
+Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=FALSE,tl=0.05,verb=FALSE)
 ticklab <- seq(-1,1,by=0.01)
-Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=F,tl=0.025,verb=F)
+Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=FALSE,tl=0.025,verb=FALSE)
 @
 
 The goodness of fit of the representation of the correlations of $X_5$ with the
@@ -411,13 +442,13 @@ g <- Gs[3,1:2]
 
 ticklab  <- c(0,seq(0,1,by=0.2))                         
 ticklabs <- (ticklab - k[3])/k[3]
-Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=T,tl=0.10,weights=Dr,axislab="AI",labpos=4,dp=T)
+Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=TRUE,tl=0.10,weights=Dr,axislab="AI",labpos=4,dp=TRUE)
 ticklab  <- c(0,seq(0,1,by=0.1))                         
 ticklabs <- (ticklab - k[3])/k[3]
-Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=F,tl=0.10,weights=Dr,verb=F)
+Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=FALSE,tl=0.10,weights=Dr,verb=FALSE)
 ticklab  <- c(0,seq(0,1,by=0.01))                         
 ticklabs <- (ticklab - k[3])/k[3]
-Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=F,tl=0.05,weights=Dr,verb=F)
+Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=FALSE,tl=0.05,weights=Dr,verb=FALSE)
 @
 
 Because the calibration is done by weighted least squares, a diagonal matrix of weights ({\tt weights=Dr}) 
@@ -463,8 +494,8 @@ ticklab  <- seq(-1,1,by=0.2)
 y <- Rxy[,2]
 g <- cca.results$Gs[2,1:2]                        
 
-Cal.Cor.Y2 <- calibrate(g,y,ticklab,cca.results$Fp[,1:2],ticklab,lm=T,tl=0.05,dp=T,reverse=T,weights=solve(Rxx),
-axislab="Y_2",cex.axislab=0.75,showlabel=F)
+Cal.Cor.Y2 <- calibrate(g,y,ticklab,cca.results$Fp[,1:2],ticklab,lm=TRUE,tl=0.05,dp=TRUE,reverse=TRUE,weights=solve(Rxx),
+axislab="Y_2",cex.axislab=0.75,showlabel=FALSE)
 @
 
 <<fig=TRUE,echo=TRUE,aap=FALSE>>=
@@ -494,7 +525,7 @@ g <- cca.results$Gs[2,1:2]
 #points(cca.results$V[,1],cca.results$V[,2],cex=0.5,pch=19,col="red")
 #textxy(cca.results$V[,1],cca.results$V[,2],rownames(Xn))
 
-Cal.Data.Y2 <- calibrate(g,y,ticklabs,Fr,ticklab,lm=T,tl=0.1,dp=T,reverse=T,verb=T,axislab="Y_2",cex.axislab=0.75,showlabel=F)
+Cal.Data.Y2 <- calibrate(g,y,ticklabs,Fr,ticklab,lm=TRUE,tl=0.1,dp=TRUE,reverse=TRUE,verb=TRUE,axislab="Y_2",cex.axislab=0.75,showlabel=FALSE)
 
 #cca.results<-lm.gls(Rxy[,5]~-1+Fr,W=solve(Rxx))
 
@@ -514,8 +545,8 @@ allow perfect recovery of correlations and original data values.
 
 Redundancy analysis can be seen as a constrained PCA. It allows two biplots, the biplot of the fitted
 values and a biplot of regression coefficients. Function {\tt rda} of the package provides a routine
-for redundancy analysis. We use Linnerud's data on physical exercise and body measurement variables
-to illustrate calibrated biplots in redundancy analysis.
+for redundancy analysis. We use Linnerud's data on physical exercise and body measurement 
+variables~\cite{Tenenhaus} to illustrate calibrated biplots in redundancy analysis.
 
 <<fig=TRUE,echo=TRUE,aap=FALSE>>=
 data(linnerud)
@@ -533,7 +564,7 @@ g <- rda.results$Gyp[3,1:2]
 Fr <- rda.results$Fs[,1:2]
 
 ticklab <- c(seq(-0.6,-0.1,by=0.1),seq(0.1,0.6,by=0.1))
-Calibrate.Yhat3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=T,dp=T,tl=0.1,axislab="Sauts",showlabel=F)
+Calibrate.Yhat3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=TRUE,dp=TRUE,tl=0.1,axislab="Sauts",showlabel=FALSE)
 @
 
 <<fig=TRUE,echo=TRUE,aap=FALSE>>=
@@ -552,11 +583,11 @@ ticklab <- seq(-0.4,0.4,0.2)
 
 W <-cor(X)
 
-Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=T,dp=T,tl=0.1,weights=W,axislab="Sauts",showlabel=F)
+Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=TRUE,dp=TRUE,tl=0.1,weights=W,axislab="Sauts",showlabel=FALSE)
 ticklab <- seq(-0.4,0.4,0.1)
-Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=F,tl=0.05,verb=F,weights=W)
+Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=FALSE,tl=0.05,verb=FALSE,weights=W)
 ticklab <- seq(-0.4,0.4,0.01)
-Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=F,tl=0.025,verb=F,weights=W)
+Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=FALSE,tl=0.025,verb=FALSE,weights=W)
 @
 
 The first biplot shown is a biplot of the fitted values (obtained 
@@ -577,6 +608,19 @@ is done by GLS with weight matrix equal to the correlation matrix of the X varia
 Online documentation for all routines in the package can be found in the file
 {\tt calibrate.pdf} in the {\tt doc} directory of the installed package.
 
+\section{Version history}
+
+Version 1.6:\\
+
+\begin{itemize}
+
+\item Function {\tt rad2degree} and {\tt shiftvector} have been added.
+
+\item Function calibrate has changed. Argument {\tt shift} from previous versions is obsolete,
+  and replaced by {\tt shiftdir, shiftfactor} and {\tt shiftvec}.
+
+\end{itemize}
+
 \section*{Acknowledgements}
 
 This work was partially supported by the Spanish grant BEC2000-0983. I thank Holland Genetics 
@@ -586,14 +630,21 @@ available. This document was generated by Sweave~\cite{Leisch}.
 \bibliographystyle{humanbio}
 \begin{thebibliography}{10}
 
-\bibitem[R Development Core Team (2004)]{RRR}
-R Development Core Team 
-(2004) 
-R: A language and environment forstatistical computing.
-R Foundation for Statistical Computing,
-Vienna, Austria,
-ISBN 3-900051-00-3,
-http://www.R-project.org.
+\bibitem[Anderson (1984)]{Anderson}
+Anderson, T. W.
+(1984)
+{A}n {I}ntroduction to {M}ultivariate {S}tatistical {A}nalysis
+John Wiley,
+Second edition,
+New York.
+  
+\bibitem[Frets (1921)]{Frets}
+Frets, G. P.
+(1921)
+Heredity of head form in man,
+Genetica,
+3, 
+pp. 193-384.
 
 \bibitem[Gabriel, 1971]{Gabriel}
 Gabriel, K. R. 
@@ -602,6 +653,29 @@ The biplot graphic display of matrices with application to principal component a
 Biometrika 
 58(3) 
 pp. 453-467.
+
+\bibitem[Gower and Hand (1996)]{Gower4}
+Gower, J. C. and Hand, D. J.
+(1996)
+Biplots
+Chapman \& Hall,
+London.
+
+\bibitem[Graffelman (2005)]{Graffel16}
+Graffelman, J.
+(2005)
+Enriched biplots for canonical correlation analysis
+Journal of Applied Statistics
+32(2)
+pp. 173-188.
+
+\bibitem[Graffelman and Aluja-Banet (2003)]{Graffel13}
+Graffelman, J. and Aluja-Banet, T.
+(2003)
+Optimal Representation of Supplementary Variables in Biplots from Principal Component Analysis and Correspondence Analysis
+Biometrical Journal,
+45(4)
+pp. 491-509.
 
 \bibitem[Graffelman and van Eeuwijk (2005)]{Graffel17}
 Graffelman, J. and van Eeuwijk, F. A.,
@@ -613,67 +687,6 @@ Biometrical Journal,
 6,
 863-879.
 
-\bibitem[Gower and Hand (1996)]{Gower4}
-Gower, J. C. and Hand, D. J.
-(1996)
-Biplots
-Chapman \& Hall,
-London.
-
-\bibitem[Manly (1989)]{Manly}
-Manly, B. F. J.
-(1989)
-Multivariate statistical methods: a primer
-Chapman and Hall, London.
-
-\bibitem[Graffelman and Aluja-Banet (2003)]{Graffel13}
-Graffelman, J. and Aluja-Banet, T.
-(2003)
-Optimal Representation of Supplementary Variables in Biplots from Principal Component Analysis and Correspondence Analysis
-Biometrical Journal,
-45(4)
-pp. 491-509.
-
-\bibitem[Venables and Ripley (2002)]{Venables}
-Venables, W. N. and Ripley, B. D.
-(2002)
-{M}odern {A}pplied {S}tatistics with {S}-{P}lus
-New York,
-Fourth edition,
-Springer.
-
-\bibitem[Frets (1921)]{Frets}
-Frets, G. P.
-(1921)
-Heredity of head form in man,
-Genetica,
-3, 
-pp. 193-384.
-
-\bibitem[Anderson (1984)]{Anderson}
-Anderson, T. W.
-(1984)
-{A}n {I}ntroduction to {M}ultivariate {S}tatistical {A}nalysis
-John Wiley,
-Second edition,
-New York.
-
-\bibitem[Mardia et al.(1979)]{Mardia}
-Mardia, K. V. and Kent, J. T. and Bibby, J. M.
-(1979)
-Multivariate Analysis
-Academic Press London.
-
-
-\bibitem[Graffelman (2005)]{Graffel16}
-Graffelman, J.
-(2005)
-Enriched biplots for canonical correlation analysis
-Journal of Applied Statistics
-32(2)
-pp. 173-188.
-
-
 \bibitem[Leisch (2002)]{Leisch}
 Leisch, F.
 (2002)
@@ -683,6 +696,42 @@ pp. 575-580,
 Physica Verlag, Heidelberg,
 ISBN 3-7908-1517-9
 URL http:/www.ci.tuwien.ac.at/~leisch/Sweave.
+
+\bibitem[Manly (1989)]{Manly}
+Manly, B. F. J.
+(1989)
+Multivariate statistical methods: a primer
+Chapman and Hall, London.
+
+\bibitem[Mardia et al.(1979)]{Mardia}
+Mardia, K. V. and Kent, J. T. and Bibby, J. M.
+(1979)
+Multivariate Analysis
+Academic Press London.
+
+\bibitem[R Development Core Team (2004)]{RRR}
+R Development Core Team 
+(2004) 
+R: A language and environment forstatistical computing.
+R Foundation for Statistical Computing,
+Vienna, Austria,
+ISBN 3-900051-00-3,
+http://www.R-project.org.
+
+\bibitem[Tenenhaus (1998)]{Tenenhaus}
+Tenenhaus, M.
+(1998)
+La R\'{e}gression PLS
+Paris, \'Editions Technip.
+
+\bibitem[Venables and Ripley (2002)]{Venables}
+Venables, W. N. and Ripley, B. D.
+(2002)
+{M}odern {A}pplied {S}tatistics with {S}-{P}lus
+New York,
+Fourth edition,
+Springer.
+
 
 \end{thebibliography}
 

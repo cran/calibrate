@@ -3,11 +3,13 @@
 \title{Calibration of Biplot and Scatterplot Axis}
 \description{Routine for the calibration of any axis (variable vector) in a biplot or a scatterplot}
 \usage{
-calibrate(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,lm=TRUE,
-verb=TRUE,axislab="",reverse=FALSE,shift=0,alpha=NULL,labpos=1,
-weights=diag(rep(1,length(y))),axiscol="blue",cex.axislab=0.75,
-graphics=TRUE,where=3,laboffset=c(0,0),m=matrix(c(0,0),nrow=1),
-markerpos=3,showlabel=TRUE,lwd=1)}
+calibrate(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,
+lm=TRUE,verb=TRUE,axislab="",reverse=FALSE,
+    alpha=NULL,labpos=1,weights=diag(rep(1,length(y))),
+    axiscol="blue",cex.axislab=0.75,graphics=TRUE,where=3,
+    laboffset=c(0,0),m=matrix(c(0,0),nrow=1),markerpos=3,
+    showlabel=TRUE,lwd=1,shiftvec=c(0,0),shiftdir="none",shiftfactor=1.05) 
+}
 \arguments{
   \item{g}{ the vector to be calibrated (2 x 1). }
   \item{y}{ the data vector corresponding to \code{g}, appropriately centred and/or standardized. }
@@ -26,7 +28,6 @@ creating finer scales of tickmarks without labels.}
   \item{verb}{ verbose parameter (F=be quiet, T=show results). }
   \item{axislab}{ a label for the calibrated axis. }
   \item{reverse}{ puts the tick marks and tick mark labels on the other side of the axis. }
-  \item{shift}{ a scalar that shifts the calibrated axis by a fixed distance. }
   \item{alpha}{ a value for the calibration factor. This parameter should only be specified if
  a calibration is required that is different from the one that is optimal for data recovery.}
   \item{labpos}{ position of the label for the calibrated axis (1,2,3 or 4). }
@@ -40,6 +41,13 @@ creating finer scales of tickmarks without labels.}
   \item{markerpos}{ position specifier for the tick mark labels (1,2,3 or 4). }
   \item{showlabel}{ show axis label in graph (T) or not (F). }
   \item{lwd}{ line with for the calibrated axis }
+  \item{shiftvec}{ a shift vector for the calibrated axis ((0,0) by
+    default) }
+  \item{shiftdir}{ indicates in which direction the axis should be
+    shifted ("left","right" or "none"). This direction is w.r.t. vector \code{g}}
+  \item{shiftfactor}{ scalar by which the shift vector is stretched (or
+    shrunken). By default, the length of the shift vector is stretched
+    by 5 percent (\code{shiftfactor} = 1.05)}
 }
 \details{
   This program calibrates variable vectors in biplots and scatterplots, by drawing tick marks along 
@@ -55,7 +63,9 @@ creating finer scales of tickmarks without labels.}
   \item{gof}{goodness of fit (as in regression)}
   \item{gos}{goodness of scale}
   \item{M}{coordinates of the tick markers}
-  \item{ang}{angle in degrees of the biplot axis with the positive x-axis}
+  \item{ang}{angle in degrees of the biplot axis with the positive
+    x-axis}
+  \item{shiftvec}{the supplied or computed shift vector}
   \item{yt}{fitted values for the variable according to the calibration}
   \item{e}{errors according to the calibration}
   \item{Fpr}{coordinates of the projections of the row markers onto the calibrated axis}

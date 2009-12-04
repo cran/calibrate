@@ -1,1 +1,1 @@
-export (calibrate,canocor,rda,textxy,circle,origin,ones,dlines)
+export (calibrate,canocor,circle,dlines,origin,ones,rad2degree,rda,shiftvector,textxy)
