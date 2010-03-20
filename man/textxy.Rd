@@ -1,6 +1,6 @@
 \name{textxy}
 \alias{textxy}
-\title{Label points in a plot}
+\title{ Nice placement of labels in a plot}
 \description{
   Function textxy calls function text in order to add text
   to points in a graph. textxy chooses a different position 
@@ -25,10 +25,12 @@ textxy(X, Y, labs, cx = 0.5, dcol = "black", m = c(0, 0))
 \author{ Jan Graffelman (jan.graffelman@upc.edu) }
 \seealso{ \code{\link{text}} }
 \examples{
-x <- runif(50)
-y <- runif(50)
-plot(x,y)
+x <- rnorm(50)
+y <- rnorm(50)
+plot(x,y,asp=1)
 textxy(x,y,1:50,m=c(mean(x),mean(y)))
 }
 \keyword{aplot}
+\keyword{misc}
+
 

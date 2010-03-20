@@ -76,29 +76,16 @@ exploratory analysis of relations within and between sets of variables in genomi
 \section{Installation}
 \label{sec:install}
 
-<<fig=FALSE,echo=FALSE>>=
-prefig <- function(){
-data(goblets)
-X <- goblets
-plot(X[,1],X[,2],pch=19,cex=0.5,xlab=expression(X[1]),
-ylab=expression(X[2]),xlim=c(5,25),ylim=c(5,25),asp=1)
-m <- apply(cbind(X[,1],X[,2]),2,mean)
-textxy(X[,1],X[,2],1:25,m=m,cx=0.75)
-points(m[1],m[2],col="red",pch=19,cex=0.5)
-abline(h = m[2])
-abline(v = m[1])
-}
-options("SweaveHooks"=list(aap=prefig))
-options("width"=60)
-@
 
 Packages in R can be installed inside the program with the option "Packages"
 in the main menu and then choosing "Install package" and picking the package
 "calibrate". Typing:
 
-<<noot>>=
-library(calibrate)
-@
+\begin{Schunk}
+\begin{Sinput}
+> library(calibrate)
+\end{Sinput}
+\end{Schunk}
 
 will, among others, make the function {\tt calibrate, canocor} and {\tt rda} available. Several
 small data sets, also the ones used in this document, are included in the package ({\tt calves, goblets,
@@ -110,10 +97,12 @@ heads, linnerud} and {\tt storks}).
 We consider a archaeological data set concerning 6 size measurements ($X_1, \ldots, X_6$) on 25 
 goblets. This data was published by Manly~(1989). The data can be loaded with
 the {\tt data} instruction. 
-<<fig=FALSE,echo=TRUE>>=
-data(goblets)
-X <- goblets
-@
+\begin{Schunk}
+\begin{Sinput}
+> data(goblets)
+> X <- goblets
+\end{Sinput}
+\end{Schunk}
 
 \subsection*{Oblique additional axes in a scatterplot}
 
@@ -122,26 +111,39 @@ axes on the point $(\overline{x}_1,\overline{x}_2)$ with the function {\tt origi
 
 \setkeys{Gin}{width=\textwidth}
 
-<<fig=TRUE,echo=TRUE>>=
-plot(X[,1],X[,2],pch=19,cex=0.5,xlab=expression(X[1]),ylab=expression(X[2]),
-     xlim=c(5,25),ylim=c(5,25),asp=1)
-m <- apply(X[,1:2],2,mean)
-textxy(X[,1],X[,2],1:25,m=m,cx=0.75)
-origin(m)
-@
+\begin{Schunk}
+\begin{Sinput}
+> plot(X[,1],X[,2],pch=19,cex=0.5,xlab=expression(X[1]),ylab=expression(X[2]),
++      xlim=c(5,25),ylim=c(5,25),asp=1)
+> m <- apply(X[,1:2],2,mean)
+> textxy(X[,1],X[,2],1:25,m=m,cx=0.75)
+> origin(m)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-004}
 
 Next, we perform the regression of $X_5$ onto $X_1$ and $X_2$ (all variables being centered) in order to 
 obtain an additional axis for $X_5$. We represent $X_5$ in the plot as a simple 
 arrow whose coordinates are given by the regression coefficients:
 
-<<fig=TRUE,echo=TRUE,aap=TRUE>>=
-Xc <- scale(X,center=TRUE,scale=FALSE)
-b <- solve(t(Xc[,1:2])%*%Xc[,1:2])%*%t(Xc[,1:2])%*%Xc[,5]
-print(b)
-bscaled <- 20*b
-arrows(m[1],m[2],m[1]+bscaled[1],m[2]+bscaled[2],col="blue",length=0.1)
-arrows(m[1],m[2],m[1]-bscaled[1],m[2]-bscaled[2],length=0,lty="dashed",col="blue")
-@
+\begin{Schunk}
+\begin{Sinput}
+> Xc <- scale(X,center=TRUE,scale=FALSE)
+> b <- solve(t(Xc[,1:2])%*%Xc[,1:2])%*%t(Xc[,1:2])%*%Xc[,5]
+> print(b)
+\end{Sinput}
+\begin{Soutput}
+        [,1]
+X1 0.3850425
+X2 0.1225419
+\end{Soutput}
+\begin{Sinput}
+> bscaled <- 20*b
+> arrows(m[1],m[2],m[1]+bscaled[1],m[2]+bscaled[2],col="blue",length=0.1)
+> arrows(m[1],m[2],m[1]-bscaled[1],m[2]-bscaled[2],length=0,lty="dashed",col="blue")
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-005}
 
 A direction that is optimal in the least squares sense for $X_5$ is given by the vector of regression
 coefficients~\cite{Graffel13}. To make this direction more visible, we multiplied it by a constant (20). 
@@ -152,14 +154,32 @@ to mark off on the scale ({\tt tm}) and also compute the deviations of these val
 ({\tt tmc}). We specify a tick length of 0.3 ({\tt tl=0.3}). Depending on the data, some values of {\tt tl}
 typically have to be tried to see how to obtain a nice scale. 
 
-<<fig=TRUE,echo=TRUE,aap=TRUE>>=
-print(range(X[,5]))
-yc <- scale(X[,5],scale=FALSE)
-tm <- seq(2,10,by=1)
-tmc <- tm - mean(X[,5])
-Calibrate.X5<-calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_5",
-                        labpos=4,cex.axislab=1)
-@
+\begin{Schunk}
+\begin{Sinput}
+> print(range(X[,5]))
+\end{Sinput}
+\begin{Soutput}
+[1]  2 11
+\end{Soutput}
+\begin{Sinput}
+> yc <- scale(X[,5],scale=FALSE)
+> tm <- seq(2,10,by=1)
+> tmc <- tm - mean(X[,5])
+> Calibrate.X5<-calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_5",
++                         labpos=4,cex.axislab=1)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_5  -------------------
+Length of 1 unit of the original variable =  2.4748  
+Angle                                     =  17.65 degrees
+Optimal calibration factor                =  6.1247  
+Used calibration factor                   =  6.1247  
+Goodness-of-fit                           =  0.5133  
+Goodness-of-scale                         =  0.5133  
+------------------------------------------------------------
+\end{Soutput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-006}
 
 The numerical output from routine {\tt calibrate} shows that one unit along the axis for $X_5$ occupies 2.47
 units in the plotting frame. The axis for $X_5$ makes an angle of 17.65 degrees with the positive x-axis.
@@ -195,13 +215,26 @@ The default {\tt shiftfactor} is 1.05. We redo
 the previous plot, shifting the calibrated axis below the cloud of points, which is to the right w.r.t. the 
 direction of increase of the variable.
 
-<<fig=TRUE,echo=TRUE,aap=TRUE>>=
-yc <- scale(X[,5],scale=FALSE)
-tm <- seq(2,10,by=1)
-tmc <- tm - mean(X[,5])
-Calibrate.X5<-calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_5",labpos=4,
-                        cex.axislab=1,shiftdir="right")
-@
+\begin{Schunk}
+\begin{Sinput}
+> yc <- scale(X[,5],scale=FALSE)
+> tm <- seq(2,10,by=1)
+> tmc <- tm - mean(X[,5])
+> Calibrate.X5<-calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.3,axislab="X_5",labpos=4,
++                         cex.axislab=1,shiftdir="right")
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_5  -------------------
+Length of 1 unit of the original variable =  2.4748  
+Angle                                     =  17.65 degrees
+Optimal calibration factor                =  6.1247  
+Used calibration factor                   =  6.1247  
+Goodness-of-fit                           =  0.5133  
+Goodness-of-scale                         =  0.5133  
+------------------------------------------------------------
+\end{Soutput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-007}
 
 The shift of the axis does not affect the interpretation of the plot, because the projections of the points
 onto the axis remain the same.
@@ -217,17 +250,32 @@ to the (0,1) vector. By specifying a shiftvector explicitly ({\tt shiftvec}), th
 this data, setting {\tt shiftvec} to {\tt c(par('usr')[2]-mean(X[,1]),0)} and {\tt shiftfactor = 1}, 
 makes the axis coincide with the right vertical borderline of the graph.
 
-<<fig=TRUE,echo=TRUE,aap=TRUE>>=
-opar <- par('xpd'=TRUE)
-tm <- seq(3,8,by=1)
-tmc <- (tm - mean(X[,5]))
-Calibrate.rightmargin.X5 <- calibrate(c(0,1),yc,tmc,Xc[,1:2],tmlab=tm,m=m,
-                                      axislab="X_5",tl=0.5,
-                                      shiftvec=c(par('usr')[2]-mean(X[,1]),0),
-                                      shiftfactor=1,where=2,
-                                      laboffset=c(1.5,1.5),cex.axislab=1)
-par(opar)
-@
+\begin{Schunk}
+\begin{Sinput}
+> opar <- par('xpd'=TRUE)
+> tm <- seq(3,8,by=1)
+> tmc <- (tm - mean(X[,5]))
+> Calibrate.rightmargin.X5 <- calibrate(c(0,1),yc,tmc,Xc[,1:2],tmlab=tm,m=m,
++                                       axislab="X_5",tl=0.5,
++                                       shiftvec=c(par('usr')[2]-mean(X[,1]),0),
++                                       shiftfactor=1,where=2,
++                                       laboffset=c(1.5,1.5),cex.axislab=1)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_5  -------------------
+Length of 1 unit of the original variable =  3.4603  
+Angle                                     =  90 degrees
+Optimal calibration factor                =  3.4603  
+Used calibration factor                   =  3.4603  
+Goodness-of-fit                           =  0.3373  
+Goodness-of-scale                         =  0.3373  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> par(opar)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-008}
 
 The second vertical axis has calibration factor 3.46, and a goodness of fit of 0.34. The fit of the
 variable is worse in comparison with the previous oblique direction given by the regression coefficients. Note
@@ -249,16 +297,31 @@ some trial and error with different values for {\tt tl} may be necessary before 
 may be automatized in the future. Finally, reading off the (approximate) data values can further be enhanced 
 by drawing perpendiculars from the points to the calibrated axis by setting {\tt dp=TRUE}.
 
-<<fig=TRUE,echo=TRUE,aap=TRUE>>=
-tm <- seq(2,10,by=1)
-tmc <- (tm - mean(X[,5]))
-Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,axislab="X_5",tl=0.5,
-                          dp=TRUE,labpos=4)
-tm <- seq(2,10,by=0.1)
-tmc <- (tm - mean(X[,5]))
-Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,verb=FALSE,
-                          lm=FALSE)
-@
+\begin{Schunk}
+\begin{Sinput}
+> tm <- seq(2,10,by=1)
+> tmc <- (tm - mean(X[,5]))
+> Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,axislab="X_5",tl=0.5,
++                           dp=TRUE,labpos=4)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_5  -------------------
+Length of 1 unit of the original variable =  2.4748  
+Angle                                     =  17.65 degrees
+Optimal calibration factor                =  6.1247  
+Used calibration factor                   =  6.1247  
+Goodness-of-fit                           =  0.5133  
+Goodness-of-scale                         =  0.5133  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> tm <- seq(2,10,by=0.1)
+> tmc <- (tm - mean(X[,5]))
+> Calibrate.X5 <- calibrate(b,yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,verb=FALSE,
++                           lm=FALSE)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-009}
 
 A {\it double calibration} can be created by drawing two scales, one on each side of the axis. Double
 calibrations can be useful. For instance, one scale can be used for recovery of the original 
@@ -273,30 +336,57 @@ redesigned. We illustrate the recalibration of the original axes by creating a s
 the other side of the axes, a refined scale for $X_1$, and a scale for the standardized data for
 $X_2$. For the latter calibration one unit equals one standard deviation. 
 
-<<fig=TRUE,echo=TRUE,aap=TRUE>>=
-opar <- par('xpd'=TRUE)
-tm <- seq(5,25,by=5)
-tmc <- (tm - mean(X[,1]))
-yc <- scale(X[,1],scale=FALSE)
-Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.5,
-                          axislab="X_1",cex.axislab=1,showlabel=FALSE,
-shiftvec=c(0,-(m[2]-par("usr")[3])),shiftfactor=1,reverse=TRUE)
-tm <- seq(5,25,by=1); tmc <- (tm - mean(X[,1]))
-Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,
-                          axislab="X_1",cex.axislab=1,showlabel=FALSE,
-shiftvec=c(0,-(m[2]-par("usr")[3])),shiftfactor=1,reverse=TRUE,
-                          verb=FALSE,lm=FALSE)
-yc <- scale(X[,2],scale=TRUE)
-tm <- seq(-3,1,by=1)
-Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.6,
-                          axislab="X_2",cex.axislab=1,showlabel=FALSE,
-shiftvec=c(-(mean(X[,1])-par('usr')[1]),0),shiftfactor=1,verb=TRUE,lm=TRUE)
-tm <- seq(-3,1.5,by=0.1)
-Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.3,
-                          axislab="X_2",cex.axislab=1,showlabel=FALSE,
-shiftvec=c(-(mean(X[,1])-par('usr')[1]),0),shiftfactor=1,verb=FALSE,lm=FALSE)
-par(opar)
-@
+\begin{Schunk}
+\begin{Sinput}
+> opar <- par('xpd'=TRUE)
+> tm <- seq(5,25,by=5)
+> tmc <- (tm - mean(X[,1]))
+> yc <- scale(X[,1],scale=FALSE)
+> Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.5,
++                           axislab="X_1",cex.axislab=1,showlabel=FALSE,
++ shiftvec=c(0,-(m[2]-par("usr")[3])),shiftfactor=1,reverse=TRUE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_1  -------------------
+Length of 1 unit of the original variable =  1  
+Angle                                     =  0 degrees
+Optimal calibration factor                =  1  
+Used calibration factor                   =  1  
+Goodness-of-fit                           =  1  
+Goodness-of-scale                         =  1  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> tm <- seq(5,25,by=1); tmc <- (tm - mean(X[,1]))
+> Calibrate.X1 <- calibrate(c(1,0),yc,tmc,Xc[,1:2],tmlab=tm,m=m,tl=0.25,
++                           axislab="X_1",cex.axislab=1,showlabel=FALSE,
++ shiftvec=c(0,-(m[2]-par("usr")[3])),shiftfactor=1,reverse=TRUE,
++                           verb=FALSE,lm=FALSE)
+> yc <- scale(X[,2],scale=TRUE)
+> tm <- seq(-3,1,by=1)
+> Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.6,
++                           axislab="X_2",cex.axislab=1,showlabel=FALSE,
++ shiftvec=c(-(mean(X[,1])-par('usr')[1]),0),shiftfactor=1,verb=TRUE,lm=TRUE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_2  -------------------
+Length of 1 unit of the original variable =  4.3367  
+Angle                                     =  90 degrees
+Optimal calibration factor                =  4.3367  
+Used calibration factor                   =  4.3367  
+Goodness-of-fit                           =  1  
+Goodness-of-scale                         =  1  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> tm <- seq(-3,1.5,by=0.1)
+> Calibrate.X2 <- calibrate(c(0,1),yc,tm,Xc[,1:2],tmlab=tm,m=m,tl=0.3,
++                           axislab="X_2",cex.axislab=1,showlabel=FALSE,
++ shiftvec=c(-(mean(X[,1])-par('usr')[1]),0),shiftfactor=1,verb=FALSE,lm=FALSE)
+> par(opar)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-010}
 
 \section{Calibration of Biplot axes}
 \label{sec:biplot}
@@ -324,57 +414,87 @@ goodness of fit of $X_3$ is very high (0.99), which means that $X_3$ is close to
 represented. {\tt Calibrate.X3} is a list object containing the numerical results of the 
 calibration.
 
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-# PCA and Biplot construction
-pca.results <- princomp(X,cor=FALSE)
-Fp <- pca.results$scores
-Gs <- pca.results$loadings
-plot(Fp[,1],Fp[,2],pch=16,asp=1,xlab="PC 1",ylab="PC 2",cex=0.5)
-textxy(Fp[,1],Fp[,2],rownames(X),cx=0.75)
-arrows(0,0,15*Gs[,1],15*Gs[,2],length=0.1)
-textxy(15*Gs[,1],15*Gs[,2],colnames(X),cx=0.75)
-# Calibration of X_3
-ticklab  <- seq(5,30,by=5)
-ticklabc <- ticklab-mean(X[,3])
-yc <- (X[,3]-mean(X[,3])) 
-g <- Gs[3,1:2]                                  
-Calibrate.X3 <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,tl=0.5,
-                          axislab="X3",cex.axislab=0.75,where=1,labpos=4)
-ticklab  <- seq(5,30,by=1)
-ticklabc <- ticklab-mean(X[,3])
-Calibrate.X3.fine <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,lm=FALSE,tl=0.25,
-                               verb=FALSE,cex.axislab=0.75,where=1,labpos=4)
-@
+\begin{Schunk}
+\begin{Sinput}
+> # PCA and Biplot construction
+> pca.results <- princomp(X,cor=FALSE)
+> Fp <- pca.results$scores
+> Gs <- pca.results$loadings
+> plot(Fp[,1],Fp[,2],pch=16,asp=1,xlab="PC 1",ylab="PC 2",cex=0.5)
+> textxy(Fp[,1],Fp[,2],rownames(X),cx=0.75)
+> arrows(0,0,15*Gs[,1],15*Gs[,2],length=0.1)
+> textxy(15*Gs[,1],15*Gs[,2],colnames(X),cx=0.75)
+> # Calibration of X_3
+> ticklab  <- seq(5,30,by=5)
+> ticklabc <- ticklab-mean(X[,3])
+> yc <- (X[,3]-mean(X[,3])) 
+> g <- Gs[3,1:2]                                  
+> Calibrate.X3 <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,tl=0.5,
++                           axislab="X3",cex.axislab=0.75,where=1,labpos=4)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X3  --------------------
+Length of 1 unit of the original variable =  1.1813  
+Angle                                     =  39.28 degrees
+Optimal calibration factor                =  1.3954  
+Used calibration factor                   =  1.3954  
+Goodness-of-fit                           =  0.9914  
+Goodness-of-scale                         =  0.9914  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> ticklab  <- seq(5,30,by=1)
+> ticklabc <- ticklab-mean(X[,3])
+> Calibrate.X3.fine <- calibrate(g,yc,ticklabc,Fp[,1:2],ticklab,lm=FALSE,tl=0.25,
++                                verb=FALSE,cex.axislab=0.75,where=1,labpos=4)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-011}
 
 We do a PCA based on the correlation matrix, and proceed to construct a biplot of the correlation matrix. The
 correlations of $X_5$ with the other variables are computed, and the biplot axis for $X_5$ is calibrated with a 
 correlation scale. Routine {\tt calibrate} is repeatedly called to create finer subscales.
 
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-# PCA and Biplot construction
-pca.results <- princomp(X,cor=TRUE)
-Fp <- pca.results$scores
-Ds <- diag(pca.results$sdev)
-Fs <- Fp%*%solve(Ds)
-Gs <- pca.results$loadings
-Gp <- Gs%*%Ds
-#plot(Fs[,1],Fs[,2],pch=16,asp=1,xlab="PC 1",ylab="PC 2",cex=0.5)
-#textxy(Fs[,1],Fs[,2],rownames(X))
-plot(Gp[,1],Gp[,2],pch=16,cex=0.5,xlim=c(-1,1),ylim=c(-1,1),asp=1,
-     xlab="1st principal axis",ylab="2nd principal axis")
-arrows(0,0,Gp[,1],Gp[,2],length=0.1)
-textxy(Gp[,1],Gp[,2],colnames(X),cx=0.75)
-ticklab <- c(seq(-1,-0.2,by=0.2),seq(0.2,1.0,by=0.2))
-R <- cor(X)
-y <- R[,5]
-g <- Gp[5,1:2]                                        
-Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=TRUE,tl=0.05,dp=TRUE,
-                      labpos=2,cex.axislab=0.75,axislab="X_5")
-ticklab <- seq(-1,1,by=0.1)
-Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=FALSE,tl=0.05,verb=FALSE)
-ticklab <- seq(-1,1,by=0.01)
-Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=FALSE,tl=0.025,verb=FALSE)
-@
+\begin{Schunk}
+\begin{Sinput}
+> # PCA and Biplot construction
+> pca.results <- princomp(X,cor=TRUE)
+> Fp <- pca.results$scores
+> Ds <- diag(pca.results$sdev)
+> Fs <- Fp%*%solve(Ds)
+> Gs <- pca.results$loadings
+> Gp <- Gs%*%Ds
+> #plot(Fs[,1],Fs[,2],pch=16,asp=1,xlab="PC 1",ylab="PC 2",cex=0.5)
+> #textxy(Fs[,1],Fs[,2],rownames(X))
+> plot(Gp[,1],Gp[,2],pch=16,cex=0.5,xlim=c(-1,1),ylim=c(-1,1),asp=1,
++      xlab="1st principal axis",ylab="2nd principal axis")
+> arrows(0,0,Gp[,1],Gp[,2],length=0.1)
+> textxy(Gp[,1],Gp[,2],colnames(X),cx=0.75)
+> ticklab <- c(seq(-1,-0.2,by=0.2),seq(0.2,1.0,by=0.2))
+> R <- cor(X)
+> y <- R[,5]
+> g <- Gp[5,1:2]                                        
+> Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=TRUE,tl=0.05,dp=TRUE,
++                       labpos=2,cex.axislab=0.75,axislab="X_5")
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  X_5  -------------------
+Length of 1 unit of the original variable =  1.0634  
+Angle                                     =  -49.36 degrees
+Optimal calibration factor                =  1.1308  
+Used calibration factor                   =  1.1308  
+Goodness-of-fit                           =  0.9824  
+Goodness-of-scale                         =  0.9824  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> ticklab <- seq(-1,1,by=0.1)
+> Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=FALSE,tl=0.05,verb=FALSE)
+> ticklab <- seq(-1,1,by=0.01)
+> Calibrate.X5 <- calibrate(g,y,ticklab,Gp[,1:2],ticklab,lm=FALSE,tl=0.025,verb=FALSE)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-012}
 
 The goodness of fit of the representation of the correlations of $X_5$ with the
 other variables is 0.98, the 6 correlations being close to perfectly represented.
@@ -386,10 +506,39 @@ The refined subscale allows very precise graphical representation of the correla
 as estimated by the biplot.
 
 \begin{center}
-<<fig=FALSE,echo=TRUE,aap=FALSE>>=
-print(R)
-print(cbind(R[,5],Calibrate.X5$yt))
-@
+\begin{Schunk}
+\begin{Sinput}
+> print(R)
+\end{Sinput}
+\begin{Soutput}
+          X1        X2        X3        X4        X5
+X1 1.0000000 0.6234051 0.3464089 0.6748429 0.6901040
+X2 0.6234051 1.0000000 0.8392292 0.8287898 0.5807725
+X3 0.3464089 0.8392292 1.0000000 0.8430518 0.2511584
+X4 0.6748429 0.8287898 0.8430518 1.0000000 0.4874610
+X5 0.6901040 0.5807725 0.2511584 0.4874610 1.0000000
+X6 0.5875703 0.7970192 0.8575089 0.9101886 0.2885165
+          X6
+X1 0.5875703
+X2 0.7970192
+X3 0.8575089
+X4 0.9101886
+X5 0.2885165
+X6 1.0000000
+\end{Soutput}
+\begin{Sinput}
+> print(cbind(R[,5],Calibrate.X5$yt))
+\end{Sinput}
+\begin{Soutput}
+        [,1]      [,2]
+X1 0.6901040 0.8257486
+X2 0.5807725 0.5462001
+X3 0.2511584 0.1914136
+X4 0.4874610 0.4992765
+X5 1.0000000 0.8843474
+X6 0.2885165 0.3326711
+\end{Soutput}
+\end{Schunk}
 \end{center}
 
 \subsection{Correspondence analysis}
@@ -427,50 +576,72 @@ to perform correspondence analysis and to obtain the coordinates for a biplot of
 We compute the row profiles and then repeatedly call the calibration routine, each time with a
 different set of {\tt ticklabs}.
 
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-library(MASS)
-data(calves)
-ca.results <- corresp(calves,nf=2)
-Fs <- ca.results$rscore
-Gs <- ca.results$cscore
-Ds <- diag(ca.results$cor)
-Fp <- Fs%*%Ds
-Gp <- Gs%*%Ds
-plot(Gs[,1],Gs[,2],pch=16,asp=1,cex=0.5,xlab="1st principal axis",
-     ylab="2nd principal axis")
-textxy(Gs[,1],Gs[,2],colnames(calves),cx=0.75)
-points(Fp[,1],Fp[,2],pch=16,cex=0.5)
-textxy(Fp[,1],Fp[,2],rownames(calves),cx=0.75)
-origin()
-arrows(0,0,Gs[,1],Gs[,2])
-
-P <- as.matrix(calves/sum(calves))
-r <- apply(P,1,sum)
-k <- apply(P,2,sum)
-Dc <- diag(k)
-Dr <- diag(r)
-
-RP <- solve(Dr)%*%P
-print(RP)
-CRP <- RP - ones(nrow(RP), 1) %*% t(k)
-TCRP <- CRP%*%solve(Dc)
-
-y <- TCRP[,3]
-g <- Gs[3,1:2]
-
-ticklab  <- c(0,seq(0,1,by=0.2))                         
-ticklabs <- (ticklab - k[3])/k[3]
-Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=TRUE,tl=0.10,
-                          weights=Dr,axislab="AI",labpos=4,dp=TRUE)
-ticklab  <- c(0,seq(0,1,by=0.1))                         
-ticklabs <- (ticklab - k[3])/k[3]
-Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=FALSE,tl=0.10,
-                          weights=Dr,verb=FALSE)
-ticklab  <- c(0,seq(0,1,by=0.01))                         
-ticklabs <- (ticklab - k[3])/k[3]
-Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=FALSE,tl=0.05,
-                          weights=Dr,verb=FALSE)
-@
+\begin{Schunk}
+\begin{Sinput}
+> library(MASS)
+> data(calves)
+> ca.results <- corresp(calves,nf=2)
+> Fs <- ca.results$rscore
+> Gs <- ca.results$cscore
+> Ds <- diag(ca.results$cor)
+> Fp <- Fs%*%Ds
+> Gp <- Gs%*%Ds
+> plot(Gs[,1],Gs[,2],pch=16,asp=1,cex=0.5,xlab="1st principal axis",
++      ylab="2nd principal axis")
+> textxy(Gs[,1],Gs[,2],colnames(calves),cx=0.75)
+> points(Fp[,1],Fp[,2],pch=16,cex=0.5)
+> textxy(Fp[,1],Fp[,2],rownames(calves),cx=0.75)
+> origin()
+> arrows(0,0,Gs[,1],Gs[,2])
+> P <- as.matrix(calves/sum(calves))
+> r <- apply(P,1,sum)
+> k <- apply(P,2,sum)
+> Dc <- diag(k)
+> Dr <- diag(r)
+> RP <- solve(Dr)%*%P
+> print(RP)
+\end{Sinput}
+\begin{Soutput}
+             ET        IVP        AI
+[1,] 0.05018107 0.07759959 0.8722193
+[2,] 0.09080048 0.10931900 0.7998805
+[3,] 0.20544959 0.13569482 0.6588556
+[4,] 0.27504105 0.18637110 0.5385878
+[5,] 0.09230769 0.29890110 0.6087912
+[6,] 0.06338028 0.50000000 0.4366197
+\end{Soutput}
+\begin{Sinput}
+> CRP <- RP - ones(nrow(RP), 1) %*% t(k)
+> TCRP <- CRP%*%solve(Dc)
+> y <- TCRP[,3]
+> g <- Gs[3,1:2]
+> ticklab  <- c(0,seq(0,1,by=0.2))                         
+> ticklabs <- (ticklab - k[3])/k[3]
+> Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=TRUE,tl=0.10,
++                           weights=Dr,axislab="AI",labpos=4,dp=TRUE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  AI  --------------------
+Length of 1 unit of the original variable =  1.6057  
+Angle                                     =  -6.82 degrees
+Optimal calibration factor                =  2.5784  
+Used calibration factor                   =  2.5784  
+Goodness-of-fit                           =  1  
+Goodness-of-scale                         =  1  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> ticklab  <- c(0,seq(0,1,by=0.1))                         
+> ticklabs <- (ticklab - k[3])/k[3]
+> Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=FALSE,tl=0.10,
++                           weights=Dr,verb=FALSE)
+> ticklab  <- c(0,seq(0,1,by=0.01))                         
+> ticklabs <- (ticklab - k[3])/k[3]
+> Calibrate.AI <- calibrate(g,y,ticklabs,Fp[,1:2],ticklab,lm=FALSE,tl=0.05,
++                           weights=Dr,verb=FALSE)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-014}
 
 Because the calibration is done by weighted least squares, a diagonal matrix of weights ({\tt weights=Dr}) 
 is supplied as a parameter to the calibration routine
@@ -487,75 +658,93 @@ We first load the data and perform
 a canonical correlation analysis, using supplied function {\tt canocor} (a more fully 
 fledged program for canonical correlation analysis in comparison with {\tt cancor} from the {\tt stats} package).
 
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-data(heads)
-X  <- cbind(heads$X1,heads$X2)
-Y  <- cbind(heads$Y1,heads$Y2)
+\begin{Schunk}
+\begin{Sinput}
+> data(heads)
+> X  <- cbind(heads$X1,heads$X2)
+> Y  <- cbind(heads$Y1,heads$Y2)
+> Rxy<- cor(X,Y)
+> Ryx<- t(Rxy)
+> Rxx<- cor(X)
+> Ryy<- cor(Y)
+> cca.results <-canocor(X,Y)
+> plot(cca.results$Gs[,1],cca.results$Gs[,2],pch=16,asp=1,xlim=c(-1,1),ylim=c(-1,1),
++      xlab=expression(V[1]),ylab=expression(V[2]))
+> arrows(0,0,cca.results$Fp[,1],cca.results$Fp[,2],length=0.1)
+> arrows(0,0,cca.results$Gs[,1],cca.results$Gs[,2],length=0.1)
+> textxy(cca.results$Fp[1,1],cca.results$Fp[1,2],expression(X[1]),cx=0.75)
+> textxy(cca.results$Fp[2,1],cca.results$Fp[2,2],expression(X[2]),cx=0.75)
+> textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]),cx=0.75)
+> textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]),cx=0.75)
+> circle(1)
+\end{Sinput}
+\begin{Soutput}
+NULL
+\end{Soutput}
+\begin{Sinput}
+> ticklab  <- seq(-1,1,by=0.2)  
+> y <- Rxy[,2]
+> g <- cca.results$Gs[2,1:2]                        
+> Cal.Cor.Y2 <- calibrate(g,y,ticklab,cca.results$Fp[,1:2],ticklab,lm=TRUE,tl=0.05,
++                         dp=TRUE,reverse=TRUE,weights=solve(Rxx),
++ axislab="Y_2",cex.axislab=0.75,showlabel=FALSE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  Y_2  -------------------
+Length of 1 unit of the original variable =  1  
+Angle                                     =  -15.92 degrees
+Optimal calibration factor                =  1  
+Used calibration factor                   =  1  
+Goodness-of-fit                           =  1  
+Goodness-of-scale                         =  1  
+------------------------------------------------------------
+\end{Soutput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-015}
 
-Rxy<- cor(X,Y)
-Ryx<- t(Rxy)
-Rxx<- cor(X)
-Ryy<- cor(Y)
-
-cca.results <-canocor(X,Y)
-
-plot(cca.results$Gs[,1],cca.results$Gs[,2],pch=16,asp=1,xlim=c(-1,1),ylim=c(-1,1),
-     xlab=expression(V[1]),ylab=expression(V[2]))
-arrows(0,0,cca.results$Fp[,1],cca.results$Fp[,2],length=0.1)
-arrows(0,0,cca.results$Gs[,1],cca.results$Gs[,2],length=0.1)
-
-textxy(cca.results$Fp[1,1],cca.results$Fp[1,2],expression(X[1]),cx=0.75)
-textxy(cca.results$Fp[2,1],cca.results$Fp[2,2],expression(X[2]),cx=0.75)
-
-textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]),cx=0.75)
-textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]),cx=0.75)
-
-circle(1)
-ticklab  <- seq(-1,1,by=0.2)  
-
-y <- Rxy[,2]
-g <- cca.results$Gs[2,1:2]                        
-
-Cal.Cor.Y2 <- calibrate(g,y,ticklab,cca.results$Fp[,1:2],ticklab,lm=TRUE,tl=0.05,
-                        dp=TRUE,reverse=TRUE,weights=solve(Rxx),
-axislab="Y_2",cex.axislab=0.75,showlabel=FALSE)
-@
-
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-
-plot(cca.results$Gs[,1],cca.results$Gs[,2],pch=16,asp=1,xlim=c(-2,2),ylim=c(-2,2),
-     xlab=expression(V[1]),ylab=expression(V[2]))
-#arrows(0,0,cca.results$Fp[,1],cca.results$Fp[,2],length=0.1)
-#arrows(0,0,cca.results$Gs[,1],cca.results$Gs[,2],length=0.1)
-
-textxy(cca.results$Fp[1,1],cca.results$Fp[1,2],expression(X[1]))
-textxy(cca.results$Fp[2,1],cca.results$Fp[2,2],expression(X[2]))
-
-textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]))
-textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]))
-
-points(cca.results$V[,1],cca.results$V[,2],pch=16,cex=0.5)
-textxy(cca.results$V[,1],cca.results$V[,2],1:nrow(X),cx=0.75)
-
-
-ticklab  <- seq(135,160,by=5)                           
-ticklabc <- ticklab-mean(Y[,2])
-ticklabs <- (ticklab-mean(Y[,2]))/sqrt(var(Y[,2]))
-
-y <- (Y[,2]-mean(Y[,2]))/sqrt(var(Y[,2]))                      
-Fr <- cca.results$V[,1:2]                                         
-g <- cca.results$Gs[2,1:2]                                        
-
-#points(cca.results$V[,1],cca.results$V[,2],cex=0.5,pch=19,col="red")
-#textxy(cca.results$V[,1],cca.results$V[,2],rownames(Xn))
-
-Cal.Data.Y2 <- calibrate(g,y,ticklabs,Fr,ticklab,lm=TRUE,tl=0.1,dp=TRUE,
-                         reverse=TRUE,verb=TRUE,axislab="Y_2",
-                         cex.axislab=0.75,showlabel=FALSE)
-
-#cca.results<-lm.gls(Rxy[,5]~-1+Fr,W=solve(Rxx))
-
-@
+\begin{Schunk}
+\begin{Sinput}
+> plot(cca.results$Gs[,1],cca.results$Gs[,2],pch=16,asp=1,xlim=c(-2,2),ylim=c(-2,2),
++      xlab=expression(V[1]),ylab=expression(V[2]))
+> #arrows(0,0,cca.results$Fp[,1],cca.results$Fp[,2],length=0.1)
+> #arrows(0,0,cca.results$Gs[,1],cca.results$Gs[,2],length=0.1)
+> 
+> textxy(cca.results$Fp[1,1],cca.results$Fp[1,2],expression(X[1]))
+> textxy(cca.results$Fp[2,1],cca.results$Fp[2,2],expression(X[2]))
+> textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]))
+> textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]))
+> points(cca.results$V[,1],cca.results$V[,2],pch=16,cex=0.5)
+> textxy(cca.results$V[,1],cca.results$V[,2],1:nrow(X),cx=0.75)
+> ticklab  <- seq(135,160,by=5)                           
+> ticklabc <- ticklab-mean(Y[,2])
+> ticklabs <- (ticklab-mean(Y[,2]))/sqrt(var(Y[,2]))
+> y <- (Y[,2]-mean(Y[,2]))/sqrt(var(Y[,2]))                      
+> Fr <- cca.results$V[,1:2]                                         
+> g <- cca.results$Gs[2,1:2]                                        
+> #points(cca.results$V[,1],cca.results$V[,2],cex=0.5,pch=19,col="red")
+> #textxy(cca.results$V[,1],cca.results$V[,2],rownames(Xn))
+> 
+> Cal.Data.Y2 <- calibrate(g,y,ticklabs,Fr,ticklab,lm=TRUE,tl=0.1,dp=TRUE,
++                          reverse=TRUE,verb=TRUE,axislab="Y_2",
++                          cex.axislab=0.75,showlabel=FALSE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  Y_2  -------------------
+Length of 1 unit of the original variable =  1  
+Angle                                     =  -15.92 degrees
+Optimal calibration factor                =  1  
+Used calibration factor                   =  1  
+Goodness-of-fit                           =  1  
+Goodness-of-scale                         =  1  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> 
+> #cca.results<-lm.gls(Rxy[,5]~-1+Fr,W=solve(Rxx))
+> 
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-016}
 
 We construct the biplot of the between-set correlation matrix (the joint 
 plot of ${\bF}_p$ and ${\bG}_s$). 
@@ -574,52 +763,74 @@ values and a biplot of regression coefficients. Function {\tt rda} of the packag
 for redundancy analysis. We use Linnerud's data on physical exercise and body measurement 
 variables~\cite{Tenenhaus} to illustrate calibrated biplots in redundancy analysis.
 
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-data(linnerud)
-X <- linnerud[,1:3]
-Y <- linnerud[,4:6]
-rda.results <- rda(X,Y)
-plot(rda.results$Fs[,1],rda.results$Fs[,2],pch=16,asp=1,xlim=c(-2,2),ylim=c(-2,2),
-     cex=0.5,xlab="1st principal axis",ylab="2nd principal axis")
-arrows(0,0,2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],length=0.1)
-textxy(rda.results$Fs[,1],rda.results$Fs[,2],rownames(X),cx=0.75)
-textxy(2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],colnames(Y),cx=0.75)
+\begin{Schunk}
+\begin{Sinput}
+> data(linnerud)
+> X <- linnerud[,1:3]
+> Y <- linnerud[,4:6]
+> rda.results <- rda(X,Y)
+> plot(rda.results$Fs[,1],rda.results$Fs[,2],pch=16,asp=1,xlim=c(-2,2),ylim=c(-2,2),
++      cex=0.5,xlab="1st principal axis",ylab="2nd principal axis")
+> arrows(0,0,2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],length=0.1)
+> textxy(rda.results$Fs[,1],rda.results$Fs[,2],rownames(X),cx=0.75)
+> textxy(2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],colnames(Y),cx=0.75)
+> y <- rda.results$Yh[,3]
+> g <- rda.results$Gyp[3,1:2]
+> Fr <- rda.results$Fs[,1:2]
+> ticklab <- c(seq(-0.6,-0.1,by=0.1),seq(0.1,0.6,by=0.1))
+> Calibrate.Yhat3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=TRUE,dp=TRUE,tl=0.1,
++                              axislab="Sauts",showlabel=FALSE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  Sauts  -----------------
+Length of 1 unit of the original variable =  4.3103  
+Angle                                     =  46.38 degrees
+Optimal calibration factor                =  18.5787  
+Used calibration factor                   =  18.5787  
+Goodness-of-fit                           =  0.9986  
+Goodness-of-scale                         =  0.9986  
+------------------------------------------------------------
+\end{Soutput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-017}
 
-y <- rda.results$Yh[,3]
-g <- rda.results$Gyp[3,1:2]
-Fr <- rda.results$Fs[,1:2]
-
-ticklab <- c(seq(-0.6,-0.1,by=0.1),seq(0.1,0.6,by=0.1))
-Calibrate.Yhat3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=TRUE,dp=TRUE,tl=0.1,
-                             axislab="Sauts",showlabel=FALSE)
-@
-
-<<fig=TRUE,echo=TRUE,aap=FALSE>>=
-plot(rda.results$Gxs[,1],rda.results$Gxs[,2],pch=16,asp=1,xlim=c(-2,2),
-     ylim=c(-2,2),cex=0.5,xlab="1st principal axis",
-ylab="2nd principal axis")
-arrows(0,0,rda.results$Gxs[,1],rda.results$Gxs[,2],length=0.1)
-arrows(0,0,rda.results$Gyp[,1],rda.results$Gyp[,2],length=0.1)
-textxy(rda.results$Gxs[,1],rda.results$Gxs[,2],colnames(X),cx=0.75)
-textxy(rda.results$Gyp[,1],rda.results$Gyp[,2],colnames(Y),cx=0.75)
-
-y <- rda.results$B[,3]
-g <- rda.results$Gyp[3,1:2]
-Fr <- rda.results$Gxs[,1:2]  
-
-ticklab <- seq(-0.4,0.4,0.2)
-
-W <-cor(X)
-
-Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=TRUE,dp=TRUE,tl=0.1,
-                          weights=W,axislab="Sauts",showlabel=FALSE)
-ticklab <- seq(-0.4,0.4,0.1)
-Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=FALSE,tl=0.05,verb=FALSE,
-                          weights=W)
-ticklab <- seq(-0.4,0.4,0.01)
-Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=FALSE,tl=0.025,verb=FALSE,
-                          weights=W)
-@
+\begin{Schunk}
+\begin{Sinput}
+> plot(rda.results$Gxs[,1],rda.results$Gxs[,2],pch=16,asp=1,xlim=c(-2,2),
++      ylim=c(-2,2),cex=0.5,xlab="1st principal axis",
++ ylab="2nd principal axis")
+> arrows(0,0,rda.results$Gxs[,1],rda.results$Gxs[,2],length=0.1)
+> arrows(0,0,rda.results$Gyp[,1],rda.results$Gyp[,2],length=0.1)
+> textxy(rda.results$Gxs[,1],rda.results$Gxs[,2],colnames(X),cx=0.75)
+> textxy(rda.results$Gyp[,1],rda.results$Gyp[,2],colnames(Y),cx=0.75)
+> y <- rda.results$B[,3]
+> g <- rda.results$Gyp[3,1:2]
+> Fr <- rda.results$Gxs[,1:2]  
+> ticklab <- seq(-0.4,0.4,0.2)
+> W <-cor(X)
+> Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=TRUE,dp=TRUE,tl=0.1,
++                           weights=W,axislab="Sauts",showlabel=FALSE)
+\end{Sinput}
+\begin{Soutput}
+---------- Calibration Results for  Sauts  -----------------
+Length of 1 unit of the original variable =  4.3103  
+Angle                                     =  46.38 degrees
+Optimal calibration factor                =  18.5787  
+Used calibration factor                   =  18.5787  
+Goodness-of-fit                           =  0.9986  
+Goodness-of-scale                         =  0.9986  
+------------------------------------------------------------
+\end{Soutput}
+\begin{Sinput}
+> ticklab <- seq(-0.4,0.4,0.1)
+> Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=FALSE,tl=0.05,verb=FALSE,
++                           weights=W)
+> ticklab <- seq(-0.4,0.4,0.01)
+> Calibrate.Y3 <- calibrate(g,y,ticklab,Fr,ticklab,lm=FALSE,tl=0.025,verb=FALSE,
++                           weights=W)
+\end{Sinput}
+\end{Schunk}
+\includegraphics{CalibrationGuide-018}
 
 The first biplot shown is a biplot of the fitted values (obtained 
 from the regression of Y onto X). Vectors for the response variables are multiplied by a factor of 3 to increase

@@ -1,9 +1,13 @@
-"circle" <-
-function(radius=1) {
-  x<-seq(-radius,radius,by=0.01)
-  y<-sqrt(radius^2-x^2);
-  lines(x,y)
-  lines(x,-y)
-  return(NULL)
+"circle" <- function(radius = 1, origin = c(0,0)) 
+{
+    t <- seq(-pi,pi,by=0.01)
+    a <- origin[1]
+    b <- origin[2]
+    r <- radius
+    x <- a + r*cos(t)
+    y <- b + r*sin(t)
+    points(x,y,type="l")
+    return(NULL)
 }
+
 
