@@ -4,7 +4,7 @@
 \description{Routine for the calibration of any axis (variable vector) in a biplot or a scatterplot}
 \usage{
 calibrate(g,y,tm,Fr,tmlab=tm,tl=0.05,dt=TRUE,dp=FALSE,
-lm=TRUE,verb=TRUE,axislab="",reverse=FALSE,
+    lm=TRUE,verb=TRUE,axislab="",reverse=FALSE,
     alpha=NULL,labpos=1,weights=diag(rep(1,length(y))),
     axiscol="blue",cex.axislab=0.75,graphics=TRUE,where=3,
     laboffset=c(0,0),m=matrix(c(0,0),nrow=1),markerpos=3,
@@ -71,7 +71,6 @@ creating finer scales of tickmarks without labels.}
   \item{Fpr}{coordinates of the projections of the row markers onto the calibrated axis}
   \item{Mn}{coordinates of the tick marker end points}
 }
-
 \references{
 Gower, J.C. and Hand, D.J., (1996) Biplots. Chapman & Hall, London
 
@@ -81,9 +80,7 @@ Biometrical Journal, 47(6) pp. 863-879.
 
 Graffelman, J. (2006) A guide to biplot calibration.
 }
-
 \author{ Jan Graffelman \email{jan.graffelman@upc.edu} }
-%\note{ ~~further notes~~ }
 \seealso{\code{\link{biplot}}}
 \examples{
 x <- rnorm(20,1)
