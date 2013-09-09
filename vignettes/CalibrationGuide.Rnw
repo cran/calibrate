@@ -8,7 +8,7 @@
 
 \usepackage[english]{babel}
 \usepackage{Sweave}
-\usepackage{Rd}
+%\usepackage{Rd}
 \usepackage{url}
 \usepackage{wrapfig}
 \usepackage{hyperref}
@@ -25,7 +25,7 @@
 \sf
 {\sf \bf \Large A Guide to Scatterplot and Biplot Calibration}\\
 \vspace{4mm}
-{\sf \normalsize {\tt version 1.7.1}}\\%\normalsize
+{\sf \normalsize {\tt version 1.7.2}}\\%\normalsize
 \vspace{4mm}
 {\bf \large Jan Graffelman}\\
 \vspace{4mm} \rm \large
@@ -34,7 +34,7 @@ Universitat Polit\`ecnica de Catalunya\\
 Avinguda Diagonal 647, 08028 Barcelona, Spain.\\
 {\it email:} jan.graffelman@upc.edu\\
 \vspace{4mm}
-{\sc December 2009}
+{\sc September 2012}
 \end{center}
 
 \section{Introduction}
@@ -83,7 +83,7 @@ X <- goblets
 plot(X[,1],X[,2],pch=19,cex=0.5,xlab=expression(X[1]),
 ylab=expression(X[2]),xlim=c(5,25),ylim=c(5,25),asp=1)
 m <- apply(cbind(X[,1],X[,2]),2,mean)
-textxy(X[,1],X[,2],1:25,m=m,cx=0.75)
+textxy(X[,1],X[,2],1:25,m=m,cex=0.75)
 points(m[1],m[2],col="red",pch=19,cex=0.5)
 abline(h = m[2])
 abline(v = m[1])
@@ -126,7 +126,7 @@ axes on the point $(\overline{x}_1,\overline{x}_2)$ with the function {\tt origi
 plot(X[,1],X[,2],pch=19,cex=0.5,xlab=expression(X[1]),ylab=expression(X[2]),
      xlim=c(5,25),ylim=c(5,25),asp=1)
 m <- apply(X[,1:2],2,mean)
-textxy(X[,1],X[,2],1:25,m=m,cx=0.75)
+textxy(X[,1],X[,2],1:25,m=m,cex=0.75)
 origin(m)
 @
 
@@ -330,9 +330,9 @@ pca.results <- princomp(X,cor=FALSE)
 Fp <- pca.results$scores
 Gs <- pca.results$loadings
 plot(Fp[,1],Fp[,2],pch=16,asp=1,xlab="PC 1",ylab="PC 2",cex=0.5)
-textxy(Fp[,1],Fp[,2],rownames(X),cx=0.75)
+textxy(Fp[,1],Fp[,2],rownames(X),cex=0.75)
 arrows(0,0,15*Gs[,1],15*Gs[,2],length=0.1)
-textxy(15*Gs[,1],15*Gs[,2],colnames(X),cx=0.75)
+textxy(15*Gs[,1],15*Gs[,2],colnames(X),cex=0.75)
 # Calibration of X_3
 ticklab  <- seq(5,30,by=5)
 ticklabc <- ticklab-mean(X[,3])
@@ -363,7 +363,7 @@ Gp <- Gs%*%Ds
 plot(Gp[,1],Gp[,2],pch=16,cex=0.5,xlim=c(-1,1),ylim=c(-1,1),asp=1,
      xlab="1st principal axis",ylab="2nd principal axis")
 arrows(0,0,Gp[,1],Gp[,2],length=0.1)
-textxy(Gp[,1],Gp[,2],colnames(X),cx=0.75)
+textxy(Gp[,1],Gp[,2],colnames(X),cex=0.75)
 ticklab <- c(seq(-1,-0.2,by=0.2),seq(0.2,1.0,by=0.2))
 R <- cor(X)
 y <- R[,5]
@@ -438,9 +438,9 @@ Fp <- Fs%*%Ds
 Gp <- Gs%*%Ds
 plot(Gs[,1],Gs[,2],pch=16,asp=1,cex=0.5,xlab="1st principal axis",
      ylab="2nd principal axis")
-textxy(Gs[,1],Gs[,2],colnames(calves),cx=0.75)
+textxy(Gs[,1],Gs[,2],colnames(calves),cex=0.75)
 points(Fp[,1],Fp[,2],pch=16,cex=0.5)
-textxy(Fp[,1],Fp[,2],rownames(calves),cx=0.75)
+textxy(Fp[,1],Fp[,2],rownames(calves),cex=0.75)
 origin()
 arrows(0,0,Gs[,1],Gs[,2])
 
@@ -504,11 +504,11 @@ plot(cca.results$Gs[,1],cca.results$Gs[,2],pch=16,asp=1,xlim=c(-1,1),ylim=c(-1,1
 arrows(0,0,cca.results$Fp[,1],cca.results$Fp[,2],length=0.1)
 arrows(0,0,cca.results$Gs[,1],cca.results$Gs[,2],length=0.1)
 
-textxy(cca.results$Fp[1,1],cca.results$Fp[1,2],expression(X[1]),cx=0.75)
-textxy(cca.results$Fp[2,1],cca.results$Fp[2,2],expression(X[2]),cx=0.75)
+textxy(cca.results$Fp[1,1],cca.results$Fp[1,2],expression(X[1]),cex=0.75)
+textxy(cca.results$Fp[2,1],cca.results$Fp[2,2],expression(X[2]),cex=0.75)
 
-textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]),cx=0.75)
-textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]),cx=0.75)
+textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]),cex=0.75)
+textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]),cex=0.75)
 
 circle(1)
 ticklab  <- seq(-1,1,by=0.2)  
@@ -535,7 +535,7 @@ textxy(cca.results$Gs[1,1],cca.results$Gs[1,2],expression(Y[1]))
 textxy(cca.results$Gs[2,1],cca.results$Gs[2,2],expression(Y[2]))
 
 points(cca.results$V[,1],cca.results$V[,2],pch=16,cex=0.5)
-textxy(cca.results$V[,1],cca.results$V[,2],1:nrow(X),cx=0.75)
+textxy(cca.results$V[,1],cca.results$V[,2],1:nrow(X),cex=0.75)
 
 
 ticklab  <- seq(135,160,by=5)                           
@@ -582,8 +582,8 @@ rda.results <- rda(X,Y)
 plot(rda.results$Fs[,1],rda.results$Fs[,2],pch=16,asp=1,xlim=c(-2,2),ylim=c(-2,2),
      cex=0.5,xlab="1st principal axis",ylab="2nd principal axis")
 arrows(0,0,2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],length=0.1)
-textxy(rda.results$Fs[,1],rda.results$Fs[,2],rownames(X),cx=0.75)
-textxy(2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],colnames(Y),cx=0.75)
+textxy(rda.results$Fs[,1],rda.results$Fs[,2],rownames(X),cex=0.75)
+textxy(2*rda.results$Gyp[,1],2*rda.results$Gyp[,2],colnames(Y),cex=0.75)
 
 y <- rda.results$Yh[,3]
 g <- rda.results$Gyp[3,1:2]
@@ -600,8 +600,8 @@ plot(rda.results$Gxs[,1],rda.results$Gxs[,2],pch=16,asp=1,xlim=c(-2,2),
 ylab="2nd principal axis")
 arrows(0,0,rda.results$Gxs[,1],rda.results$Gxs[,2],length=0.1)
 arrows(0,0,rda.results$Gyp[,1],rda.results$Gyp[,2],length=0.1)
-textxy(rda.results$Gxs[,1],rda.results$Gxs[,2],colnames(X),cx=0.75)
-textxy(rda.results$Gyp[,1],rda.results$Gyp[,2],colnames(Y),cx=0.75)
+textxy(rda.results$Gxs[,1],rda.results$Gxs[,2],colnames(X),cex=0.75)
+textxy(rda.results$Gyp[,1],rda.results$Gyp[,2],colnames(Y),cex=0.75)
 
 y <- rda.results$B[,3]
 g <- rda.results$Gyp[3,1:2]
@@ -636,8 +636,9 @@ is done by GLS with weight matrix equal to the correlation matrix of the X varia
 \section{Online documentation}
 \label{sec:online}
 
-Online documentation for all routines in the package can be found in the file
-{\tt calibrate.pdf} in the {\tt doc} directory of the installed package.
+Online documentation for the package can be obtained by typing 
+{\tt vignette("CalibrationGuide"} or by accessing the file {\tt CalibrationGuide.pdf} in the {\tt doc} 
+directory of the installed package.
 
 \section{Version history}
 
@@ -651,6 +652,13 @@ Version 1.6:\\
   and replaced by {\tt shiftdir, shiftfactor} and {\tt shiftvec}.
 
 \end{itemize}
+
+Version 1.7.2:\\
+
+\begin{itemize}
+\item Function {\tt textxy} has been modified and improved. Arguments {\tt dcol} and {\tt cx} no longer work, and their role has been taken over by {\tt col} and {\tt cex}. A new argument {\tt offset} controls the distance between point and label.
+\end{itemize}
+
 
 \section*{Acknowledgements}
 
