@@ -7,7 +7,6 @@
     x <- a + r*cos(t)
     y <- b + r*sin(t)
     points(x,y,type="l")
-    return(NULL)
 }
 
 

@@ -1,5 +1,4 @@
 ### R code from vignette source 'CalibrationGuide.Rnw'
-### Encoding: ISO8859-1
 
 ###################################################
 ### code chunk number 1: CalibrationGuide.Rnw:79-92
