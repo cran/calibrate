@@ -25,7 +25,7 @@
 \sf
 {\sf \bf \Large A Guide to Scatterplot and Biplot Calibration}\\
 \vspace{4mm}
-{\sf \normalsize {\tt version 1.7.4}}\\%\normalsize
+{\sf \normalsize {\tt version 1.7.6}}\\%\normalsize
 \vspace{4mm}
 {\bf \large Jan Graffelman}\\
 \vspace{4mm} \rm \large
@@ -34,7 +34,7 @@ Universitat Polit\`ecnica de Catalunya\\
 Avinguda Diagonal 647, 08028 Barcelona, Spain.\\
 {\it email:} jan.graffelman@upc.edu\\
 \vspace{4mm}
-{\sc October 2019}
+{\sc June 2020}
 \end{center}
 
 \section{Introduction}
