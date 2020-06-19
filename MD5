@@ -1,4 +1,4 @@
-cb566617219f6f685a9db9889b7de829 *DESCRIPTION
+5fa2d496a93e7927b2f5c7c611055443 *DESCRIPTION
 d1709b9fcfdc4b246eefaa549c438ffb *NAMESPACE
 34673f8f2646cf656e2c1c564ea2261f *R/PrinCoor.R
 fea55c10612d15c10d7677600de93716 *R/bplot.R
@@ -21,9 +21,10 @@ af1e5c49defadb6ee2eb2f3c9291d895 *data/heads.rda
 0989b01101751b1b4e21a6856d735b9c *data/linnerud.rda
 746422ef45cf53983d88a9d8fd392b65 *data/spaindist.rda
 749b44889ac722733deaedb3b3f9c1c4 *data/storks.rda
+692d2811d7fe6ce4123a801d1ef61240 *inst/CITATION
 d35a81d26f79d43cbdab533aa4042b0b *inst/doc/CalibrationGuide.R
-061d782971d667a1378982d999fc8a97 *inst/doc/CalibrationGuide.Rnw
-16163e3987e903b8f5c1682324f749db *inst/doc/CalibrationGuide.pdf
+4555949b7c5ebd0c19a264967a240afb *inst/doc/CalibrationGuide.Rnw
+4d0257d400549316e6549b21ce0462a3 *inst/doc/CalibrationGuide.pdf
 483ee1f73dac7235f7577fe5b712e757 *man/PrinCoor.Rd
 768e666e5b0a640b6313c067859dc3cf *man/bplot.Rd
 24a4c36dbe44f734067ae38be21fb8e0 *man/calibrate.Rd
@@ -42,4 +43,4 @@ df46ed53135cca9da7a0e24ace44ca1b *man/rda.Rd
 5c8dc1353412b2321abc742769ab93df *man/spaindist.Rd
 70b0962a116fb08c3297e34a1564de0b *man/storks.Rd
 5a9e2c7e7590ebd5f43aa70cd386b174 *man/textxy.Rd
-061d782971d667a1378982d999fc8a97 *vignettes/CalibrationGuide.Rnw
+4555949b7c5ebd0c19a264967a240afb *vignettes/CalibrationGuide.Rnw

@@ -25,7 +25,7 @@
 \sf
 {\sf \bf \Large A Guide to Scatterplot and Biplot Calibration}\\
 \vspace{4mm}
-{\sf \normalsize {\tt version 1.7.6}}\\%\normalsize
+{\sf \normalsize {\tt version 1.7.7}}\\%\normalsize
 \vspace{4mm}
 {\bf \large Jan Graffelman}\\
 \vspace{4mm} \rm \large
